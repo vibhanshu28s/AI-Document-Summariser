@@ -1,9 +1,9 @@
 import streamlit as st
 from pathlib import Path
 
-st.set_page_config(page_title="Document Summarizer", page_icon="📄")
+st.set_page_config(page_title="Document Summariser", page_icon="📄")
 
-st.title("📄 Document Summarizer")
+st.title("📄 Document Summariser")
 st.write("Upload a PDF to Generate Summarized Report.")
 
 # File Uploader
@@ -236,4 +236,3 @@ if uploaded_file is not None:
 
             except Exception as e:
                 st.error(f"An error occurred: {e}")
-
