@@ -23,7 +23,7 @@ response = client.models.generate_content(
     model="gemini-2.5-flash",
     contents=[
         """Perform a high-fidelity OCR and layout extraction on this PDF. 
-        
+
         STRICT REQUIREMENTS:
         1. STRUCTURE: Maintain the exact logical flow and hierarchy of the document.
         2. TABLES: Convert every table into a valid Markdown table format.
@@ -64,7 +64,7 @@ doc.add_heading('Extracted Document Content', 0)
 # We split the text by newlines to create proper paragraphs in Word
 paragraphs = extracted_text.split('\n')
 for p in paragraphs:
-    if p.strip(): # Only add non-empty lines
+    if p.strip():  # Only add non-empty lines
         doc.add_paragraph(p)
 
 doc.save("output.docx")
