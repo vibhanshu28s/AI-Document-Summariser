@@ -4,7 +4,7 @@ from google.genai import types
 from docx import Document
 import os
 from dotenv import load_dotenv
-from scipy.constants import precision
+
 
 load_dotenv()
 
