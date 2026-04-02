@@ -8,34 +8,36 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-AI_API = os.getenv("GEMINI_API_KEY")
-# Initialize Client
+AI_API = os.getenv("GOV")
+
 client = genai.Client(api_key=AI_API)
 
-# 1. Load the PDF
-pdf_path = "input.pdf"
+
+pdf_path = "ds/input_4.pdf"
 with open(pdf_path, "rb") as f:
     pdf_bytes = f.read()
 
-# 2. Generate Content
-# Prompting for Markdown helps maintain structure for the Word doc conversion
 response = client.models.generate_content(
     model="gemini-2.5-flash",
     contents=[
         """Perform a high-fidelity OCR and layout extraction on this PDF. 
-        
-        STRICT REQUIREMENTS:
-        1. STRUCTURE: Maintain the exact logical flow and hierarchy of the document.
-        2. TABLES: Convert every table into a valid Markdown table format.
-        3. NO CHATTER: Do not provide any intro, outro, or status updates. Output ONLY the document content.
-        4. NO SKIPPING: If a word is blurred, smudged, or partially obscured, do not skip it. Provide the most likely transcription based on surrounding context. If truly illegible, use [? - best guess].
-        5. PRECISION: Maintain original capitalization, punctuation, and numerical data exactly as shown.
-        6. NO REPETITION: Do not duplicate lines or sections.""",
+
+                                STRICT RULES:
+                                1. STRUCTURE: Replicate the logical flow and hierarchy.
+                                2. TABLES: Convert tables to Markdown.
+                                3. NO CHATTER: Output ONLY document content.
+                                4. NO LOOPING: Do not repeat segments of text. If you find yourself outputting the same line twice, move to the next section immediately.
+                                5. PRECISION: Maintain original capitalization and punctuation.""",
         types.Part.from_bytes(
             data=pdf_bytes,
             mime_type="application/pdf"
         )
-    ]
+    ],
+        config=types.GenerateContentConfig(
+                        temperature=0.0,           # Increased slightly to avoid deterministic loops
+                        # frequency_penalty=0.8,    # NEW: Penalizes the model for repeating tokens
+                        # presence_penalty=0.3      # NEW: Encourages the model to move to new content
+                    )
 )
 
 extracted_text = response.text
@@ -67,6 +69,6 @@ for p in paragraphs:
     if p.strip(): # Only add non-empty lines
         doc.add_paragraph(p)
 
-doc.save("output.docx")
+doc.save("ds_ext/output_input_4.docx")
 
 print("✅ Saved to output.docx")
